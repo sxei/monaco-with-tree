@@ -1,6 +1,6 @@
 <style lang="scss">
 .test-demo {
-    height: 90vh;
+    height: 100vh;
 }
 </style>
 <template>

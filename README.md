@@ -51,25 +51,10 @@
 
 * 使用vue-cli官方脚手架生成的代码，但是当代码中有 props: {xxx: {type: Array}} 时会报错：token.type.endsWith is not a function错误？需要手动将babel-eslint版本从10.x降为8.x即可解决；
 
-## Project setup
+# 开发与发布
+
 ```
 npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
+npm run dev
 npm run build
 ```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

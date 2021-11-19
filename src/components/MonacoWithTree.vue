@@ -134,7 +134,6 @@
             this.minSplitPercent = (100 / totalWith) * 100;
             this.$nextTick(() => {
                 this.initMonacoTree();
-                // this.openFile(this.defaultOpenFiles[0]);
             });
         },
         methods: {

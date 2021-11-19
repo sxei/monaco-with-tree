@@ -1,11 +1,13 @@
 {
   "name": "monaco-with-tree",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "private": false,
+  "main": "lib/MonacoWithTree.umd.js",
   "scripts": {
     "serve": "vue-cli-service serve",
     "dev": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build-old": "vue-cli-service build",
+    "build": "vue-cli-service build --target lib --dest lib --name MonacoWithTree src/index.js",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
