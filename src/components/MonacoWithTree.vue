@@ -46,7 +46,7 @@
                     <!-- insert-to-after：添加tab时插入到当前tab后面 -->
                     <vue-tabs-chrome ref="tab" theme="dark" v-model="currentTab" :tabs="tabs"
                         insert-to-after>
-                        </vue-tabs-chrome>
+                    </vue-tabs-chrome>
                     <!-- monaco初始化的时候高度必须确定好，所以这里用visibility来隐藏 -->
                     <div ref="monaco" :style="{height: `calc(100% - ${tabHeight}px)`, visibility2: currentTab ? 'visible' : 'hidden'}"></div>
                     <div v-show="!currentTab" class="no-tab-pane" :style="{height: `calc(100% - ${tabHeight}px)`}">
@@ -63,7 +63,7 @@
     import SplitPane from 'vue-splitpane';
     import * as monaco from 'monaco-editor';
 
-    let monacoDiff = null;
+    let monacoDiffEditor = null;
     let monacoEditor = null;
     let monacoTree = null;
 
@@ -136,6 +136,14 @@
                 this.initMonacoTree();
             });
         },
+        // 组件销毁事件
+        destroyed() {
+            // 销毁编辑器
+            monacoDiffEditor && monacoDiffEditor.dispose();
+            monacoEditor && monacoEditor.dispose();
+            monacoDiffEditor = null;
+            monacoEditor = null;
+        },
         methods: {
             initMonacoTree() {
                 console.log(this.files);
@@ -149,9 +157,21 @@
                     },
                 });
                 monacoTree.expandAll();
-                if (this.defaultOpenFiles && this.defaultOpenFiles[0]) {
-                    monacoTree.setSelection(this.defaultOpenFiles[0]);
-                }
+                setTimeout(() => {
+                    if (this.defaultOpenFiles && this.defaultOpenFiles[0]) {
+                        monacoTree.setSelection(this.defaultOpenFiles[0]);
+                    }
+                });
+            },
+            getMonacoTree() {
+                return monacoTree;
+            },
+            getMonacoDiffEditor() {
+                return monacoDiffEditor;
+            },
+            // 选中并打开某个文件
+            setSelection(filePath) {
+                monacoTree && monacoTree.setSelection(filePath);
             },
             initMonacoEditor(filePath) {
                 const resp = this.getFileContent(filePath);
@@ -164,10 +184,10 @@
                 };
                 const ext = filePath.slice(filePath.lastIndexOf('.') + 1);
                 const language = modeMap[ext.toLowerCase()] || 'javascript';
-                if (!monacoDiff) {
+                if (!monacoDiffEditor) {
                     // 如果不是diff模式
                     if (!right) {
-                        monacoDiff = monaco.editor.create(this.$refs.monaco, {
+                        monacoDiffEditor = monaco.editor.create(this.$refs.monaco, {
                             theme: 'vs-dark',
                             fontSize: '13px',
                             readOnly: true,
@@ -175,7 +195,7 @@
                             language,
                         });
                     } else {
-                        monacoDiff = monaco.editor.createDiffEditor(this.$refs.monaco, {
+                        monacoDiffEditor = monaco.editor.createDiffEditor(this.$refs.monaco, {
                             // 禁用分割线resize
                             enableSplitViewResizing: false,
                             theme: 'vs-dark',
@@ -185,11 +205,11 @@
                     }
                 }
                 if (!right) {
-                    monacoDiff.setValue(left);
+                    monacoDiffEditor.setValue(left);
                 } else {
                     const original = monaco.editor.createModel(left, language);
                     const modified = monaco.editor.createModel(right, language);
-                    monacoDiff.setModel({original, modified});
+                    monacoDiffEditor.setModel({original, modified});
                 }
             },
             openFile(filePath, file, fileIcon, isDoubleClick = true) {

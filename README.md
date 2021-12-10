@@ -54,7 +54,7 @@
 # 开发与发布
 
 ```
-npm install
+npm i
 npm run dev
 npm run build
 ```
