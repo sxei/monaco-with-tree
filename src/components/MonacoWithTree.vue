@@ -1,8 +1,14 @@
 <style lang="scss">
 .monaco-with-tree {
     height: 100%;
-    .monaco-with-tree-splitter {
-    
+    background: #3a3a3a;
+    &.full-screen {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100vh !important;
+        z-index: 100000;
     }
     .monaco-menu-pane {
         height: 100%;
@@ -30,25 +36,46 @@
             align-items: center;
         }
     }
+    .btn-fullscreen {
+        position: absolute;
+        top: 10px;
+        right: 8px;
+        z-index: 2000;
+        color: white;
+        width: 24px;
+        height: 24px;
+        text-align: center;
+        line-height: 24px;
+        cursor: pointer;
+        opacity: 0.8;
+        &.fullscreen {
+            position: fixed;
+        }
+        &:hover {
+            opacity: 1;
+        }
+    }
 }
 
 
 </style>
 <template>
-    <div ref="wrapper" class="monaco-with-tree">
+    <div ref="wrapper" :class="`monaco-with-tree${isFullScreen ? ' full-screen' : ''}`">
         <split-pane v-if="defaultSplitPercent" @resize="resize" :min-percent="minSplitPercent" :default-percent="defaultSplitPercent"
             split="vertical" class="monaco-with-tree-splitter">
             <template slot="paneL">
-                <div ref="menu" class="monaco-menu-pane"></div>
+                <div ref="menu" class="monaco-menu-pane" />
             </template>
             <template slot="paneR">
                 <div class="monaco-right-pane">
                     <!-- insert-to-after：添加tab时插入到当前tab后面 -->
-                    <vue-tabs-chrome ref="tab" theme="dark" v-model="currentTab" :tabs="tabs"
-                        insert-to-after>
-                    </vue-tabs-chrome>
+                    <vue-tabs-chrome ref="tab" theme="dark" v-model="currentTab" :tabs="tabs" insert-to-after />
+                    <i @click="toggleFullScreen" :class="['btn-fullscreen', 'luyou-icon', 
+                        isFullScreen ? 'icontuichuquanping' : 'iconquanping1',
+                        isFullScreen ? 'fullscreen' : '']" 
+                    />
                     <!-- monaco初始化的时候高度必须确定好，所以这里用visibility来隐藏 -->
-                    <div ref="monaco" :style="{height: `calc(100% - ${tabHeight}px)`, visibility2: currentTab ? 'visible' : 'hidden'}"></div>
+                    <div ref="monaco" :style="{height: `calc(100% - ${tabHeight}px)`, visibility2: currentTab ? 'visible' : 'hidden'}" />
                     <div v-show="!currentTab" class="no-tab-pane" :style="{height: `calc(100% - ${tabHeight}px)`}">
                         <div class="center-wrapper">请从左侧打开一个文件</div>
                     </div>
@@ -107,6 +134,7 @@
                 minSplitPercent: 0, // 最小宽度百分比
                 currentTab: '', // 当前标签的key
                 tabs: [],
+                isFullScreen: false,
             };
         },
         computed: {
@@ -187,7 +215,7 @@
                 if (!monacoDiffEditor) {
                     // 如果不是diff模式
                     if (!right) {
-                        monacoDiffEditor = monaco.editor.create(this.$refs.monaco, {
+                        monacoEditor = monaco.editor.create(this.$refs.monaco, {
                             theme: 'vs-dark',
                             fontSize: '13px',
                             readOnly: true,
@@ -201,11 +229,12 @@
                             theme: 'vs-dark',
                             fontSize: '13px',
                             readOnly: true,
+                            automaticLayout: true,
                         });
                     }
                 }
                 if (!right) {
-                    monacoDiffEditor.setValue(left);
+                    monacoEditor.setValue(left);
                 } else {
                     const original = monaco.editor.createModel(left, language);
                     const modified = monaco.editor.createModel(right, language);
@@ -239,6 +268,9 @@
             },
             resize() {
 
+            },
+            toggleFullScreen() {
+                this.isFullScreen = !this.isFullScreen;
             },
         }
     }

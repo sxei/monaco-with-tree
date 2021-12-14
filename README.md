@@ -47,6 +47,34 @@
 </script>
 ```
 
+如果NPM方式加载有问题也可以直接使用script引入（注意不要与amd类似冲突）：
+
+```html
+<script src="/assets/MonacoWithTree.umd.min.js"></script>
+```
+
+vue文件：
+```vue
+<template>
+    <div class="luyou-code-review-wrapper">
+        <monaco-with-tree
+            v-if="files.length"
+            ref="monacoWithTree"
+            :files="files"
+            :default-open-files="defaultOpenFiles"
+            :get-file-content="getFileContent"
+        />
+    </div>
+</template>
+<script>
+    export default {
+        components: {
+            MonacoWithTree: window.MonacoWithTree.default,
+        },
+    }
+</script>
+```
+
 # 问题记录
 
 * 使用vue-cli官方脚手架生成的代码，但是当代码中有 props: {xxx: {type: Array}} 时会报错：token.type.endsWith is not a function错误？需要手动将babel-eslint版本从10.x降为8.x即可解决；
