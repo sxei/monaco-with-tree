@@ -2,6 +2,8 @@
 .monaco-with-tree {
     height: 100%;
     background: #3a3a3a;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
+    -webkit-font-smoothing: antialiased;
     &.full-screen {
         position: fixed;
         left: 0;
@@ -17,10 +19,16 @@
         height: 100%;
         position: relative;
         .vue-tabs-chrome {
+            *, *::before, *::after {
+                -webkit-box-sizing: border-box;
+                box-sizing: border-box;
+            }
+            font-size: 14px;
             .tabs-item.monaco-icon-label::before {
+                box-sizing: content-box;
                 position: absolute;
                 left: 22px;
-                top: 1px;
+                top: 5px;
                 z-index: 1;
             }
         }
@@ -56,8 +64,6 @@
         }
     }
 }
-
-
 </style>
 <template>
     <div ref="wrapper" :class="`monaco-with-tree${isFullScreen ? ' full-screen' : ''}`">
@@ -121,6 +127,10 @@
                     // return `${filePath}-left`
                     return [`${filePath}-left`, `${filePath}-right`];
                 },
+            },
+            getFileTitle: {
+                type: Function,
+                default: filePath => filePath.split('/').pop(),
             },
             monacoConfig: {
                 type: Object,
@@ -251,7 +261,7 @@
                 } else {
                     if (isDoubleClick) {
                         this.$refs.tab.addTab({
-                            label: filePath.split('/').pop(),
+                            label: this.getFileTitle(filePath),
                             key: filePath,
                             closable: true,
                             // 默认的icon只支持传图片，这里我们直接使用monaco的icon class来实现图标展示

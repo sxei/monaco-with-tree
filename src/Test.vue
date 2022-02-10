@@ -21,7 +21,7 @@
         },
         data() {
             return {
-                files: ['package.json',  'README.md', 'index.js', 'src/test.js', 'src/index.js', 'public/index.html'],
+                files: ['package.json',  'README.md', 'index.js', 'js/test.js', 'css/index.css', 'img/test.png', 'models/test.js', 'controllers/index.js', 'templates/index.js', 'views/test.js', 'src/index.js', 'public/index.html'],
                 defaultOpenFiles: ['package.json'],
             }
         },
