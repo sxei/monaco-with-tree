@@ -34,6 +34,7 @@
         }
         .no-tab-pane {
             background-color: #1e1e1e;
+            color: whitesmoke;
             text-align: center;
             position: absolute;
             left: 0;
